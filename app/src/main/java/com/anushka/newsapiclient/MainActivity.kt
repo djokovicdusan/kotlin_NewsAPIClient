@@ -39,4 +39,5 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, factory)
             .get(NewsViewModel::class.java)
     }
+    // test test
 }
