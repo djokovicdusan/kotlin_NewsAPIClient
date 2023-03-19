@@ -25,7 +25,6 @@ class ArticleDaoTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
 
-
     private lateinit var dao: ArticleDAO
     private lateinit var database: ArticleDatabase
 
@@ -88,8 +87,5 @@ class ArticleDaoTest {
 
     }
 
-
-    suspend fun <T> Flow<List<T>>.flattenToList() =
-        flatMapConcat { it.asFlow() }.toList()
 
 }
