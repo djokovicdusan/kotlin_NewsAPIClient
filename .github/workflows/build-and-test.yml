@@ -19,3 +19,6 @@ jobs:
         distribution: 'adopt'
     - name: Run tests with Gradle
       run: ./gradlew test
+    - name: Clean and build with Gradle
+      run: ./gradlew clean build
+
