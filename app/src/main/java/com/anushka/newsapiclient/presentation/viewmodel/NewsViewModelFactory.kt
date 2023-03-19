@@ -13,7 +13,7 @@ class NewsViewModelFactory(
     private val getSavedNewsUseCase: GetSavedNewsUseCase,
     private val deleteSavedNewsUseCase: DeleteSavedNewsUseCase
 ):ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return NewsViewModel(
             app,
             getNewsHeadlinesUseCase,
