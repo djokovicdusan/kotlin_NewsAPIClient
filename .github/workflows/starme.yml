@@ -9,13 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Send Notification
-      env:
-        REPO: ${{ github.repository }}
-        ACTOR: ${{ github.actor }}
       run: |
-        curl \
-        -X POST \
-        -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-        -H "Accept: application/vnd.github.v3+json" \
-        "https://api.github.com/repos/$REPO/issues" \
-        -d "{\"title\":\"New star received!\", \"body\":\"$ACTOR just starred your repository $REPO.\"}"
+        curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/issues \
+          --header "Authorization: token ${{ secrets.PAT }}" \
+          --header "Accept: application/vnd.github.v3+json" \
+          --data "{\"title\":\"New star received!\",\"body\":\"${{ github.actor }} just starred your repository ${{ github.repository }}.\"}"
