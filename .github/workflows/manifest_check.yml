@@ -14,8 +14,11 @@ jobs:
       - name: Check AndroidManifest.xml changes
         id: check_changes
         run: |
-          git diff --name-only HEAD^ HEAD | grep -q -E '^AndroidManifest\.xml$' || true
-          echo ::set-output name=manifest_changed::$?
+          git diff --name-only HEAD^ HEAD | grep -E '^AndroidManifest\.xml$' || true
+          MANIFEST_CHANGED=$?
+          echo "Manifest changed: $MANIFEST_CHANGED"
+          echo ::set-output name=manifest_changed::$MANIFEST_CHANGED
+
 
 
       - name: Add "Manifest altered" label
@@ -25,6 +28,8 @@ jobs:
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           PR_REPO=${{ github.event.repository.full_name }}
+          echo "PR number: $PR_NUMBER"
+          echo "PR repo: $PR_REPO"
 
           curl \
             -X POST \
@@ -32,3 +37,4 @@ jobs:
             -H "Authorization: token $GITHUB_TOKEN" \
             https://api.github.com/repos/$PR_REPO/issues/$PR_NUMBER/labels \
             -d '{"labels":["Manifest altered"]}'
+
