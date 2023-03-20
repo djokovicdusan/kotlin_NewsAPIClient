@@ -1,0 +1,29 @@
+name: Check AndroidManifest.xml Changes
+
+on:
+  push:
+    paths:
+      - 'AndroidManifest.xml'
+  pull_request:
+    paths:
+      - 'AndroidManifest.xml'
+
+jobs:
+  add_label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add "Manifest altered" label
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          PR_REPO=$(jq --raw-output .repository.full_name "$GITHUB_EVENT_PATH")
+
+          if [ "$PR_NUMBER" != "null" ]; then
+            curl \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              https://api.github.com/repos/$PR_REPO/issues/$PR_NUMBER/labels \
+              -d '{"labels":["Manifest altered"]}'
+          fi
