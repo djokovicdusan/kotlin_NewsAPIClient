@@ -16,7 +16,7 @@ interface NewsAPIService {
         @Query("page")
         page:Int,
         @Query("apiKey")
-        apiKey:String = BuildConfig.API_KEY
+        apiKey:String = BuildConfig.MY_KEY
     ): Response<APIResponse>
 
     @GET("v2/top-headlines")
@@ -28,7 +28,7 @@ interface NewsAPIService {
         @Query("page")
         page:Int,
         @Query("apiKey")
-        apiKey:String = BuildConfig.API_KEY
+        apiKey:String = BuildConfig.MY_KEY
     ): Response<APIResponse>
 
 }
