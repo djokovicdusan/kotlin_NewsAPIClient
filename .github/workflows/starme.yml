@@ -1,0 +1,23 @@
+name: Notify on Star
+
+on:
+  watch:
+    types: [started]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Send Notification
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const payload = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: "New star received!",
+            body: `${context.actor} just starred your repository ${context.repo.owner}/${context.repo.repo}.`,
+          };
+          const response = await octokit.issues.create(payload);
+          console.log("Notification sent: ", response.data.html_url);
