@@ -1,29 +1,33 @@
 name: Check AndroidManifest.xml Changes
 
-on:
-  push:
-    paths:
-      - 'AndroidManifest.xml'
-  pull_request:
-    paths:
-      - 'AndroidManifest.xml'
+on: [push, pull_request]
 
 jobs:
   add_label:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Check AndroidManifest.xml changes
+        id: check_changes
+        run: |
+          git diff --name-only HEAD^ HEAD | grep -q -E '^AndroidManifest\.xml$'
+          echo ::set-output name=manifest_changed::$?
+
       - name: Add "Manifest altered" label
+        if: steps.check_changes.outputs.manifest_changed == '0' && github.event_name == 'pull_request'
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
-          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-          PR_REPO=$(jq --raw-output .repository.full_name "$GITHUB_EVENT_PATH")
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          PR_REPO=${{ github.event.repository.full_name }}
 
-          if [ "$PR_NUMBER" != "null" ]; then
-            curl \
-              -X POST \
-              -H "Accept: application/vnd.github+json" \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              https://api.github.com/repos/$PR_REPO/issues/$PR_NUMBER/labels \
-              -d '{"labels":["Manifest altered"]}'
-          fi
+          curl \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            https://api.github.com/repos/$PR_REPO/issues/$PR_NUMBER/labels \
+            -d '{"labels":["Manifest altered"]}'
