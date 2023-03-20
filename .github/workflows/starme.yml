@@ -9,15 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Send Notification
-      uses: actions/github-script@v5
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const payload = {
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            title: "New star received!",
-            body: `${context.actor} just starred your repository ${context.repo.owner}/${context.repo.repo}.`,
-          };
-          const response = await octokit.issues.create(payload);
-          console.log("Notification sent: ", response.data.html_url);
+      env:
+        REPO: ${{ github.repository }}
+        ACTOR: ${{ github.actor }}
+      run: |
+        curl \
+        -X POST \
+        -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        "https://api.github.com/repos/$REPO/issues" \
+        -d "{\"title\":\"New star received!\", \"body\":\"$ACTOR just starred your repository $REPO.\"}"
