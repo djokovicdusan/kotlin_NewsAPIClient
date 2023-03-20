@@ -1,3 +1,4 @@
+
 name: Build and Test
 
 on:
@@ -17,8 +18,11 @@ jobs:
       with:
         java-version: 11
         distribution: 'adopt'
-    - name: Run tests with Gradle
-      run: ./gradlew test
+
     - name: Clean and build with Gradle
       run: ./gradlew clean build
+    - name: Run tests with Gradle
+      run: ./gradlew test
+
+
 
