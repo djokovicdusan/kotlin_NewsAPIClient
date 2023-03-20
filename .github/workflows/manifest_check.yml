@@ -14,8 +14,9 @@ jobs:
       - name: Check AndroidManifest.xml changes
         id: check_changes
         run: |
-          git diff --name-only HEAD^ HEAD | grep -q -E '^AndroidManifest\.xml$'
+          git diff --name-only HEAD^ HEAD | grep -q -E '^AndroidManifest\.xml$' || true
           echo ::set-output name=manifest_changed::$?
+
 
       - name: Add "Manifest altered" label
         if: steps.check_changes.outputs.manifest_changed == '0' && github.event_name == 'pull_request'
