@@ -1,0 +1,19 @@
+name: Notify on Watch
+
+on:
+  watch:
+    types: [started]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Send Notification
+      env:
+        PAT: ${{ secrets.PAT }}
+      run: |
+        curl -X POST \
+        -H "Accept: application/vnd.github.v3+json" \
+        -H "Authorization: token $PAT" \
+        "https://api.github.com/repos/{owner}/{repo}/issues" \
+        -d "{\"title\": \"New watch received!\", \"body\": \"${{ github.actor }} just started watching your repository {{ github.repository }}.\"}"
