@@ -18,6 +18,7 @@ import com.anushka.newsapiclient.databinding.FragmentNewsBinding
 import com.anushka.newsapiclient.presentation.adapter.NewsAdapter
 import com.anushka.newsapiclient.presentation.viewmodel.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -142,70 +143,79 @@ class NewsFragment : Fragment() {
 
         }
     }
-    private fun setSearchView(){
+    private var searchJob: Job? = null
+
+    private fun setSearchView() {
         fragmentNewsBinding.svNews.setOnQueryTextListener(
-            object : SearchView.OnQueryTextListener{
+            object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
-                    viewModel.searchNews("us",p0.toString(),page)
+                    viewModel.searchNews("us", p0.toString(), page)
                     viewSearchedNews()
                     return false
                 }
 
                 override fun onQueryTextChange(p0: String?): Boolean {
-                    MainScope().launch {
+                    // Cancel the previous job if there's any
+                    searchJob?.cancel()
+
+                    searchJob = MainScope().launch {
                         delay(2000)
-                        viewModel.searchNews("us", p0.toString(), page)
-                        viewSearchedNews()
+                        if (p0 != null && p0.isNotBlank()) {
+                            viewModel.searchNews("us", p0.toString(), page)
+                            viewSearchedNews()
+                        }
                     }
                     return false
                 }
-
             })
 
         fragmentNewsBinding.svNews.setOnCloseListener(
-            object :SearchView.OnCloseListener{
+            object : SearchView.OnCloseListener {
                 override fun onClose(): Boolean {
                     initRecyclerView()
                     viewNewsList()
                     return false
                 }
-
             })
     }
 
 
 
 
+
     fun viewSearchedNews(){
-        viewModel.searchedNews.observe(viewLifecycleOwner,{response->
-            when(response){
-                is com.anushka.newsapiclient.data.util.Resource.Success->{
+        if ( view != null){
+            viewModel.searchedNews.observe(viewLifecycleOwner,{response->
+                when(response){
+                    is com.anushka.newsapiclient.data.util.Resource.Success->{
 
-                    hideProgressBar()
-                    response.data?.let {
-                        Log.i("MYTAG","came here ${it.articles.toList().size}")
-                        newsAdapter.differ.submitList(it.articles.toList())
-                        if(it.totalResults%20 == 0) {
-                            pages = it.totalResults / 20
-                        }else{
-                            pages = it.totalResults/20+1
+                        hideProgressBar()
+                        response.data?.let {
+                            Log.i("MYTAG","came here ${it.articles.toList().size}")
+                            newsAdapter.differ.submitList(it.articles.toList())
+                            if(it.totalResults%20 == 0) {
+                                pages = it.totalResults / 20
+                            }else{
+                                pages = it.totalResults/20+1
+                            }
+                            isLastPage = page == pages
                         }
-                        isLastPage = page == pages
                     }
-                }
-                is com.anushka.newsapiclient.data.util.Resource.Error->{
-                    hideProgressBar()
-                    response.message?.let {
-                        Toast.makeText(activity,"An error occurred : $it", Toast.LENGTH_LONG).show()
+                    is com.anushka.newsapiclient.data.util.Resource.Error->{
+                        hideProgressBar()
+                        response.message?.let {
+                            Toast.makeText(activity,"An error occurred : $it", Toast.LENGTH_LONG).show()
+                        }
                     }
-                }
 
-                is com.anushka.newsapiclient.data.util.Resource.Loading->{
-                    showProgressBar()
-                }
+                    is com.anushka.newsapiclient.data.util.Resource.Loading->{
+                        showProgressBar()
+                    }
 
-            }
-        })
+                }
+            })
+        }
+
     }
 
 

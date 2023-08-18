@@ -32,4 +32,13 @@
             android:name="selected_article"
             app:argType="com.anushka.newsapiclient.data.model.Article" />
     </fragment>
+    <fragment
+        android:id="@+id/news2Fragment"
+        android:name="com.anushka.newsapiclient.presentation.News2Fragment"
+        android:label="News 2"
+        >
+        <action
+            android:id="@+id/action_newsFragment_to_infoFragment"
+            app:destination="@id/infoFragment" />
+    </fragment>
 </navigation>
