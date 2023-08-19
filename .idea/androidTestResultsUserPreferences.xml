@@ -3,6 +3,20 @@
   <component name="AndroidTestResultsUserPreferences">
     <option name="androidTestResultsTableState">
       <map>
+        <entry key="371450018">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="R5CW11AN92B" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-S916B" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="456538199">
           <value>
             <AndroidTestResultsTableState>
@@ -24,8 +38,10 @@
                 <map>
                   <entry key="94a4c3b" value="120" />
                   <entry key="Duration" value="90" />
+                  <entry key="R5CW11AN92B" value="120" />
                   <entry key="Tests" value="360" />
                   <entry key="Xiaomi&#10; Mi Note 10" value="120" />
+                  <entry key="samsung&#10; SM-S916B" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>

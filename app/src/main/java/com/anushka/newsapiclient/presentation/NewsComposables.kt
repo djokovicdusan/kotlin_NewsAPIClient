@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -58,7 +59,8 @@ fun NewsScreen(viewModel: NewsViewModel, onArticleClick: (Article) -> Unit) {
 
         when (newsData) {
             is Resource.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize())
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize().testTag("Progress indicator"))
+
             }
             is Resource.Success -> {
                 val articles = (newsData as Resource.Success<APIResponse>).data?.articles
@@ -90,7 +92,7 @@ fun NewsSearchBar(searchQuery: String, onQueryChanged: (String) -> Unit) {
     ) {
         Icon(
             imageVector = Icons.Default.Search,
-            contentDescription = null,
+            contentDescription = "Search Icon",
             modifier = Modifier
                 .size(40.dp)
                 .padding(end = 5.dp)
@@ -157,7 +159,7 @@ fun NewsItem(article: Article, onArticleClick: (Article) -> Unit) {
                         .fillMaxHeight()
                 ) {
                     Text(
-                        text = article.description?.substring(0..30) ?: "",
+                        text = article.description?.substring(0..10) ?: "",
                         color = colorResource(id = R.color.list_text),
                         fontSize = 12.sp,
                         maxLines = 5,

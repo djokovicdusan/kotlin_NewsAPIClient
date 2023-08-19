@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class NewsViewModel(
+open class NewsViewModel(
     private val app: Application,
     private val getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
     private val getSearchedNewsUseCase: GetSearchedNewsUseCase,
@@ -27,7 +27,7 @@ class NewsViewModel(
     private val deleteSavedNewsUseCase: DeleteSavedNewsUseCase
 ) : ViewModel() {
 
-    val newsHeadLines: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
+    open val newsHeadLines: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
 
     fun getNewsHeadLines(country: String, page: Int) = viewModelScope.launch(Dispatchers.IO) {
         newsHeadLines.postValue(Resource.Loading())
